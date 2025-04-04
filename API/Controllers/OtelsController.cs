@@ -19,7 +19,7 @@ namespace OtelAPI.Controllers
         }
 
         /// <summary>
-        /// asdasd
+        /// Yeni otel kaydeder.
         /// </summary>
         /// <param name="otel"></param>
         /// <returns></returns>
