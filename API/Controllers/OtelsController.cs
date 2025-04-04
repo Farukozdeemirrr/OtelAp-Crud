@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Business.Abstract;
 using AutoMapper;
 using DTO.Otel;
+using DTO.General;
 
 namespace OtelAPI.Controllers
 {
@@ -35,10 +36,10 @@ namespace OtelAPI.Controllers
             _otelService.DeleteOtel(id);
         }
 
-        [HttpGet("[action]")]
-        public List<OtelDto> GetAllOtels()
+        [HttpPost("[action]")]
+        public List<OtelDto> GetAllOtels([FromBody] PagingInput<string> pagingInput)
         {
-            return _otelService.GetAllOtels();
+            return _otelService.GetAllOtels(pagingInput);
         }
 
         [HttpGet("{id}")]

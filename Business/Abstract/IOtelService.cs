@@ -1,4 +1,5 @@
-﻿using DTO.Otel;
+﻿using DTO.General;
+using DTO.Otel;
 using Entities;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace Business.Abstract
 {
     public interface IOtelService
     {
-        List<OtelDto> GetAllOtels();
+        List<OtelDto> GetAllOtels(PagingInput<string> pagingInput);
         OtelDto GetOtelById(long id);
         OtelDto CreateOtel(OtelDto otel);
         OtelDto UpdateOtel(OtelDto otel);
