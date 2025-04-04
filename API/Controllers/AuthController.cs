@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.JWT;
+using DTO.General;
 using DTO.Otel;
 using DTO.Person;
 using Entities;
@@ -104,10 +105,10 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpGet("admin-otelleri")]
-        public IActionResult GetHotels()
+        [HttpPost ("admin-otelleri")]
+        public IActionResult GetHotels([FromBody] PagingInput<string> pagingInput)
         {
-            var hotels = _otelService.GetAllOtels();     // Oteller
+            var hotels = _otelService.GetAllOtels(pagingInput);     // Oteller
             var garages = _garageService.GetAllGarages(); // Garajlar
 
             return Ok(new

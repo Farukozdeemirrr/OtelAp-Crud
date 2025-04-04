@@ -6,6 +6,7 @@ using DataAccess;
 using DataAccess.Abstract;
 using DataAccess.Concrete;
 using DTO.Garage;
+using DTO.General;
 using DTO.Otel;
 using Entities;
 using FluentValidation;
@@ -94,7 +95,7 @@ namespace Business.Concrete
         }
 
         public void DeleteOtel(long id)
-        { 
+        {
             //BURAYI SOR BAŞKA YOLU VAR MI???
             // Silme işlemi için geçerli bir DTO oluşturuyoruz.
             var deleteOtelDto = new OtelDto { Id = id };
@@ -115,15 +116,32 @@ namespace Business.Concrete
 
         }
 
-        public List<OtelDto> GetAllOtels()
+        public List<OtelDto> GetAllOtels(PagingInput<string> pagingInput)
         {
-            
+
             using (var context = new OtelDbContext())
             {
                 var otelQuery = _otelRepository.GetAll(context);
                 var projectedQuery = _mapper.ProjectTo<OtelDto>(otelQuery);
 
-                return projectedQuery.ToList();
+                var result = new List<OtelDto>();
+                
+                if (!string.IsNullOrWhiteSpace(pagingInput.Data))
+                {
+                    projectedQuery= projectedQuery.Where(x => x.City == pagingInput.Data || x.Name == pagingInput.Data);
+
+                }
+
+                if (pagingInput.Enable)
+                {
+                    result = projectedQuery.Skip((pagingInput.PageNumber - 1) * pagingInput.PageSize).Take(pagingInput.PageSize).ToList();
+                }
+                else
+                {
+                    result = projectedQuery.ToList();
+                }
+
+                return result;
             }
         }
 
