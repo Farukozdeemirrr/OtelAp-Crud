@@ -18,6 +18,11 @@ namespace OtelAPI.Controllers
             _otelService = otelService;
         }
 
+        /// <summary>
+        /// asdasd
+        /// </summary>
+        /// <param name="otel"></param>
+        /// <returns></returns>
         [HttpPost("Upsert")]
         public OtelDto ProcessOtel([FromBody] OtelDto otel)
         {
