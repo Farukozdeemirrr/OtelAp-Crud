@@ -22,16 +22,20 @@ namespace Business.Concrete
         private readonly IMapper _mapper;
         private readonly UserLoginValidator _loginValidator;
         private readonly UserRegisterValidator _registerValidator;
+        private readonly PasswordService _passwordService;
+
 
         public PersonManager(IPersonRepository personRepository,
             IMapper mapper,
             UserLoginValidator loginValidator,
-            UserRegisterValidator registerValidator)
+            UserRegisterValidator registerValidator,
+            PasswordService passwordService)
         {
             _mapper = mapper;
             _personRepository = personRepository;
             _loginValidator = loginValidator;
             _registerValidator = registerValidator;
+            _passwordService = passwordService;
         }
 
         public UserRegisterDto UpsertPerson(UserRegisterDto userRegisterDto)
@@ -49,17 +53,20 @@ namespace Business.Concrete
             if (!validation.IsValid)
                 throw new ValidationException(validation.Errors);
 
-            
-
             using (var context = new OtelDbContext())
             {
                 var entityPerson = _mapper.Map<Person>(userRegister);
+
+                // 🔒 Şifre hashleniyor 
+                entityPerson.Password = _passwordService.HashPassword(userRegister.Password);
+
                 var createPerson = _personRepository.Add(context, entityPerson);
                 context.SaveChanges();
 
                 return _mapper.Map<UserRegisterDto>(createPerson);
             }
         }
+
 
         public UserRegisterDto UpdatePerson(UserRegisterDto userRegister)
         {
@@ -70,14 +77,18 @@ namespace Business.Concrete
 
             using (var context = new OtelDbContext())
             {
-
                 var entityPerson = _mapper.Map<Person>(userRegister);
+
+                // 🔒 Güncellenmiş şifre tekrar hashleniyor
+                entityPerson.Password = _passwordService.HashPassword(userRegister.Password);
+
                 var updatePerson = _personRepository.Update(context, entityPerson);
                 context.SaveChanges();
 
                 return _mapper.Map<UserRegisterDto>(updatePerson);
             }
         }
+
 
         public void DeletePerson(long id)
         {
@@ -130,6 +141,8 @@ namespace Business.Concrete
                 return _personRepository.GetAll(context).Any(x => x.Email == email);
             }
         }
+     
+
 
     }
 }
