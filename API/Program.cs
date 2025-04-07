@@ -52,6 +52,9 @@ namespace API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddScoped<PasswordService>();
+
+
             builder.Services.AddScoped<IOtelService, OtelManager>();
             builder.Services.AddScoped<IOtelRepository, OtelRepository>();
 
